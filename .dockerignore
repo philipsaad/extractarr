@@ -1,0 +1,11 @@
+**/bin/
+**/obj/
+**/node_modules/
+**/App_Data/
+frontend/dist/
+.git/
+.vs/
+*.db
+*.db-shm
+*.db-wal
+

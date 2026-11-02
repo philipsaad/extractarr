@@ -1,0 +1,34 @@
+# .NET Build artifacts
+**/bin/
+**/obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vs/
+.vscode/
+
+# Local databases & app data
+**/App_Data/
+*.db
+*.db-shm
+*.db-wal
+*.log
+
+# Node & Frontend
+**/node_modules/
+frontend/dist/
+frontend/.vite/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# Deployment build archives
+deploy/proxmox-lxc/*.tar.gz
+deploy/proxmox-lxc/publish/
+
+

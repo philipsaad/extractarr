@@ -1,0 +1,265 @@
+name: CI & Release Pipeline
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      create_release:
+        description: 'Create a GitHub Release even if not triggered by tag'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup Python 3
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.12'
+
+      - name: Setup Node.js 24
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Build React Frontend
+        run: |
+          cd frontend
+          npm ci || npm install
+          npm run build
+
+      - name: Setup .NET 10 SDK
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore Extractarr.sln
+
+      - name: Run Unit & Integration Tests
+        run: dotnet test Extractarr.sln -c Release --no-restore --verbosity normal
+
+  package-artifacts:
+    name: Package Binaries, Modules & Docker
+    needs: build-and-test
+    if: startsWith(github.ref, 'refs/tags/v') || github.event.inputs.create_release == 'true' || github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Determine Version
+        id: versioning
+        run: |
+          if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+            VERSION="${GITHUB_REF_NAME#v}"
+            TAG_NAME="${GITHUB_REF_NAME}"
+          else
+            VERSION="1.0.0.${{ github.run_number }}"
+            TAG_NAME="v${VERSION}"
+          fi
+          echo "VERSION=${VERSION}" >> $GITHUB_OUTPUT
+          echo "TAG_NAME=${TAG_NAME}" >> $GITHUB_OUTPUT
+          echo "Building Extractarr version ${VERSION} (Tag: ${TAG_NAME})"
+
+      - name: Setup Python 3
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.12'
+
+      - name: Setup Node.js 24
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Build React Frontend
+        run: |
+          cd frontend
+          npm ci || npm install
+          npm run build
+          cd ..
+          rm -rf src/Extractarr.Host/wwwroot/*
+          cp -r frontend/dist/* src/Extractarr.Host/wwwroot/
+
+      - name: Setup .NET 10 SDK
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Install FPM & rpm tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ruby ruby-dev rubygems build-essential rpm
+          sudo gem install --no-document fpm
+
+      - name: Publish Windows x64 (Self-Contained)
+        run: |
+          dotnet publish src/Extractarr.Host/Extractarr.Host.csproj \
+            -c Release \
+            -r win-x64 \
+            --self-contained true \
+            -p:PublishSingleFile=false \
+            -p:Version=${{ steps.versioning.outputs.VERSION }} \
+            -o ./dist/win-x64
+
+          mkdir -p ./dist/win-x64/deploy
+          cp deploy/windows/*.ps1 ./dist/win-x64/ 2>/dev/null || true
+          cp deploy/windows/*.bat ./dist/win-x64/ 2>/dev/null || true
+
+          mkdir -p ./artifacts
+          cd ./dist/win-x64
+          zip -r ../../artifacts/extractarr-windows-x64.zip .
+          cd ../..
+
+      - name: Publish Linux x64 (Self-Contained)
+        run: |
+          dotnet publish src/Extractarr.Host/Extractarr.Host.csproj \
+            -c Release \
+            -r linux-x64 \
+            --self-contained true \
+            -p:PublishSingleFile=false \
+            -p:Version=${{ steps.versioning.outputs.VERSION }} \
+            -o ./dist/linux-x64
+
+          chmod +x ./dist/linux-x64/Extractarr.Host
+          cp deploy/proxmox-lxc/extractarr.service ./dist/linux-x64/ 2>/dev/null || true
+          cp deploy/proxmox-lxc/install-lxc.sh ./dist/linux-x64/ 2>/dev/null || true
+
+          cd ./dist/linux-x64
+          tar -czf ../../artifacts/extractarr-linux-x64.tar.gz .
+          cd ../..
+
+      - name: Build Debian Package (.deb)
+        run: |
+          mkdir -p packaging/deb-root/opt/Extractarr
+          mkdir -p packaging/deb-root/etc/systemd/system
+          cp -r dist/linux-x64/* packaging/deb-root/opt/Extractarr/
+          cp deploy/proxmox-lxc/extractarr.service packaging/deb-root/etc/systemd/system/
+
+          # Post-install & pre-remove scripts for deb
+          mkdir -p packaging/scripts
+          cat << 'EOF' > packaging/scripts/postinst.sh
+          #!/bin/sh
+          set -e
+          mkdir -p /var/lib/extractarr
+          systemctl daemon-reload || true
+          if [ -d /run/systemd/system ]; then
+              systemctl enable extractarr || true
+              systemctl restart extractarr || true
+          fi
+          EOF
+          chmod +x packaging/scripts/postinst.sh
+
+          cat << 'EOF' > packaging/scripts/prerm.sh
+          #!/bin/sh
+          set -e
+          if [ -d /run/systemd/system ]; then
+              systemctl stop extractarr || true
+              systemctl disable extractarr || true
+          fi
+          EOF
+          chmod +x packaging/scripts/prerm.sh
+
+          fpm -s dir -t deb \
+            -n extractarr \
+            -v ${{ steps.versioning.outputs.VERSION }} \
+            -a x86_64 \
+            --description "Automated Archive Extraction Engine & Sonarr v5 Web UI for the *arr Ecosystem" \
+            --maintainer "Extractarr Team" \
+            --url "https://github.com/philipsaad/extractarr" \
+            --license "MIT" \
+            --after-install packaging/scripts/postinst.sh \
+            --before-remove packaging/scripts/prerm.sh \
+            -C packaging/deb-root \
+            -p artifacts/extractarr_${{ steps.versioning.outputs.VERSION }}_amd64.deb
+
+      - name: Build RPM Package (.rpm)
+        run: |
+          mkdir -p packaging/rpm-root/opt/Extractarr
+          mkdir -p packaging/rpm-root/usr/lib/systemd/system
+          cp -r dist/linux-x64/* packaging/rpm-root/opt/Extractarr/
+          cp deploy/proxmox-lxc/extractarr.service packaging/rpm-root/usr/lib/systemd/system/
+
+          fpm -s dir -t rpm \
+            -n extractarr \
+            -v ${{ steps.versioning.outputs.VERSION }} \
+            -a x86_64 \
+            --description "Automated Archive Extraction Engine & Sonarr v5 Web UI for the *arr Ecosystem" \
+            --maintainer "Extractarr Team" \
+            --url "https://github.com/philipsaad/extractarr" \
+            --license "MIT" \
+            --after-install packaging/scripts/postinst.sh \
+            --before-remove packaging/scripts/prerm.sh \
+            -C packaging/rpm-root \
+            -p artifacts/extractarr-${{ steps.versioning.outputs.VERSION }}-1.x86_64.rpm
+
+      - name: Build & Save Docker Image Tarball (No registry push)
+        run: |
+          docker build \
+            --file Dockerfile \
+            --tag extractarr:latest \
+            --tag extractarr:${{ steps.versioning.outputs.VERSION }} \
+            .
+
+          docker save extractarr:latest extractarr:${{ steps.versioning.outputs.VERSION }} | gzip > artifacts/extractarr-docker-image.tar.gz
+
+      - name: Generate Checksums (SHA256)
+        run: |
+          cd artifacts
+          sha256sum * > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+          cd ..
+
+      - name: Upload Artifacts to Workflow Run
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: extractarr-release-artifacts
+          path: artifacts/*
+          if-no-files-found: error
+
+      - name: Create GitHub Release (GitHub Only, No External Registries)
+        if: startsWith(github.ref, 'refs/tags/v') || github.event.inputs.create_release == 'true'
+        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
+        with:
+          tag_name: ${{ steps.versioning.outputs.TAG_NAME }}
+          name: Extractarr Release ${{ steps.versioning.outputs.TAG_NAME }}
+          body: |
+            ## Extractarr Release ${{ steps.versioning.outputs.TAG_NAME }}
+
+            Sonarr v5-styled Automated Archive Extraction Engine & GUI for the `*arr` Ecosystem.
+
+            ### Package Binaries & Modules:
+            - **Windows x64**: `extractarr-windows-x64.zip` (Includes `Extractarr.Host.exe`, PowerShell service installer, and `.bat` launcher)
+            - **Linux x64**: `extractarr-linux-x64.tar.gz` (Self-contained binary + systemd service)
+            - **Debian / Ubuntu (.deb)**: `extractarr_${{ steps.versioning.outputs.VERSION }}_amd64.deb`
+            - **RHEL / Fedora / AlmaLinux (.rpm)**: `extractarr-${{ steps.versioning.outputs.VERSION }}-1.x86_64.rpm`
+            - **Docker Standalone Tarball**: `extractarr-docker-image.tar.gz` (`docker load < extractarr-docker-image.tar.gz`)
+
+            ### Checksums:
+            Refer to `SHA256SUMS.txt` for integrity verification.
+          files: |
+            artifacts/*
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
