@@ -1,0 +1,20 @@
+services:
+  extractarr:
+    image: extractarr:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: extractarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=Etc/UTC
+      - EXTRACTARR_PORT=8686
+    volumes:
+      - ./config:/config
+      - ./downloads:/downloads
+    ports:
+      - "8686:8686"
+    restart: unless-stopped
+

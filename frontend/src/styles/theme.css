@@ -1,0 +1,113 @@
+:root,
+[data-theme='dark'] {
+  --sonarr-cyan: #35c5f4;
+  --sonarr-cyan-hover: #52d0f8;
+  --sonarr-cyan-dim: rgba(53, 197, 244, 0.14);
+  --header-bg: #1b1b1f;
+  --sidebar-bg: #222328;
+  --sidebar-hover: #2a2c33;
+  --sidebar-active: #18191d;
+  --page-bg: #141518;
+  --card-bg: #1e2025;
+  --card-hover: #25272e;
+  --modal-bg: #22242a;
+  --input-bg: #17181c;
+  --border-color: #2f323b;
+  --table-row-hover: rgba(255, 255, 255, 0.035);
+  --table-header-bg: #191a1f;
+  --text-primary: #eceef2;
+  --text-secondary: #9ca3af;
+  --text-muted: #6b7280;
+  --success: #27c24c;
+  --warning: #ff902b;
+  --danger: #f05050;
+  --purple: #7266ba;
+  --radarr-amber: #ffc230;
+  --lidarr-green: #2ecc71;
+  --readarr-crimson: #e74c3c;
+  --whisparr-pink: #e84393;
+}
+
+[data-theme='light'] {
+  --sonarr-cyan: #0099cc;
+  --sonarr-cyan-hover: #007aa3;
+  --sonarr-cyan-dim: rgba(0, 153, 204, 0.12);
+  --header-bg: #1f242d;
+  --sidebar-bg: #262c36;
+  --sidebar-hover: #303744;
+  --sidebar-active: #191d24;
+  --page-bg: #f3f4f6;
+  --card-bg: #ffffff;
+  --card-hover: #f9fafb;
+  --modal-bg: #ffffff;
+  --input-bg: #f9fafb;
+  --border-color: #e2e8f0;
+  --table-row-hover: rgba(0, 0, 0, 0.03);
+  --table-header-bg: #edf1f5;
+  --text-primary: #1e293b;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  --success: #16a34a;
+  --warning: #d97706;
+  --danger: #dc2626;
+  --purple: #6d28d9;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen, Ubuntu, Cantarell, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  background-color: var(--page-bg);
+  color: var(--text-primary);
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+
+/* Color-Impaired Mode Striped Progress Bars */
+[data-color-impaired='true'] .progress-fill-striped {
+  background-image: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.25) 25%,
+    transparent 25%,
+    transparent 50%,
+    rgba(255, 255, 255, 0.25) 50%,
+    rgba(255, 255, 255, 0.25) 75%,
+    transparent 75%,
+    transparent
+  );
+  background-size: 20px 20px;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.25);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.45);
+}
+

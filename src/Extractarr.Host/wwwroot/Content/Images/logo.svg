@@ -1,0 +1,16 @@
+<svg viewBox="0 0 256 256" width="256" height="256" xmlns="http://www.w3.org/2000/svg">
+  <!-- Solid Rounded Squircle Badge -->
+  <rect x="12" y="12" width="232" height="232" rx="52" fill="#181528" stroke="#342B5C" stroke-width="8"/>
+  <!-- Isometric Archive Box Left Face -->
+  <polygon points="128,132 48,92 48,176 128,216" fill="#5B37EB"/>
+  <!-- Isometric Archive Box Right Face -->
+  <polygon points="128,132 208,92 208,176 128,216" fill="#7C5CFF"/>
+  <!-- Isometric Open Box Top Flaps -->
+  <polygon points="128,52 48,92 128,132 208,92" fill="#2A2248"/>
+  <!-- Archive Zipper Teeth (Solid Geometric Blocks) -->
+  <rect x="122" y="142" width="12" height="10" rx="2" fill="#F1F2F7"/>
+  <rect x="122" y="160" width="12" height="10" rx="2" fill="#F1F2F7"/>
+  <rect x="122" y="178" width="12" height="10" rx="2" fill="#F1F2F7"/>
+  <!-- Bold Upward Extraction Arrow -->
+  <polygon points="128,34 86,78 112,78 112,116 144,116 144,78 170,78" fill="#F1F2F7"/>
+</svg>

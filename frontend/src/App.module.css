@@ -1,0 +1,584 @@
+/* ============================================================================
+ * Extractarr Shell — Composed 1:1 from Official Sonarr v5 CSS Modules
+ * ============================================================================ */
+
+.appShell {
+  composes: page from 'Components/Page/Page.module.css';
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background-color: var(--pageBackground);
+  color: var(--textColor);
+}
+
+.topHeader {
+  composes: header from 'Components/Page/Header/PageHeader.module.css';
+}
+
+.brandArea {
+  composes: logoContainer from 'Components/Page/Header/PageHeader.module.css';
+  gap: 10px;
+}
+
+.logoLink {
+  composes: logoLink from 'Components/Page/Header/PageHeader.module.css';
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.brandLogoImg {
+  composes: logo from 'Components/Page/Header/PageHeader.module.css';
+}
+
+.brandTitle {
+  composes: brandName from 'Components/Page/Header/PageHeader.module.css';
+}
+
+.searchWrapper {
+  composes: wrapper from 'Components/Page/Header/SeriesSearchInput.module.css';
+}
+
+.searchInputWrapper {
+  composes: inputWrapper from 'Components/Page/Header/SeriesSearchInput.module.css';
+}
+
+.searchIcon {
+  composes: searchIcon from 'Components/Page/Header/SeriesSearchInput.module.css';
+}
+
+.searchInput {
+  composes: input from 'Components/Page/Header/SeriesSearchInput.module.css';
+}
+
+.headerRight {
+  composes: right from 'Components/Page/Header/PageHeader.module.css';
+}
+
+.headerIconButton {
+  composes: menuButton from 'Components/Page/Header/PageHeaderActionsMenu.module.css';
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.donateButton {
+  composes: donate from 'Components/Page/Header/PageHeader.module.css';
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.mainLayout {
+  composes: main from 'Components/Page/Page.module.css';
+  overflow: hidden;
+}
+
+/* Sidebar — Composed from Components/Page/Sidebar/PageSidebar.module.css & PageSidebarItem.module.css */
+.sidebar {
+  composes: sidebarContainer from 'Components/Page/Sidebar/PageSidebar.module.css';
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--borderColor);
+  user-select: none;
+}
+
+.navGroup {
+  composes: sidebar from 'Components/Page/Sidebar/PageSidebar.module.css';
+  flex: 1;
+  overflow-y: auto;
+}
+
+.sidebarGroupLabel {
+  composes: groupLabel from 'Components/Page/Sidebar/PageSidebar.module.css';
+}
+
+.sidebarDivider {
+  composes: divider from 'Components/Page/Sidebar/PageSidebar.module.css';
+}
+
+.navItem {
+  composes: link from 'Components/Page/Sidebar/PageSidebarItem.module.css';
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.navItemActive {
+  composes: isActiveLink from 'Components/Page/Sidebar/PageSidebarItem.module.css';
+}
+
+.navItemActiveParent {
+  composes: isActiveParentLink from 'Components/Page/Sidebar/PageSidebarItem.module.css';
+}
+
+.navItemLeft {
+  display: inline-flex;
+  align-items: center;
+}
+
+.navIconContainer {
+  composes: iconContainer from 'Components/Page/Sidebar/PageSidebarItem.module.css';
+}
+
+.subNavList {
+  display: flex;
+  flex-direction: column;
+}
+
+.subNavItem {
+  composes: childLink from 'Components/Page/Sidebar/PageSidebarItem.module.css';
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.subNavItemActive {
+  composes: isActiveLink from 'Components/Page/Sidebar/PageSidebarItem.module.css';
+}
+
+.navBadge {
+  composes: label small info from 'Components/Label.module.css';
+}
+
+.navBadgeWarn {
+  composes: label small warning from 'Components/Label.module.css';
+}
+
+.navBadgeDanger {
+  composes: label small danger from 'Components/Label.module.css';
+}
+
+/* Page Content & Toolbar — Composed from Components/Page/Toolbar/* */
+.contentArea {
+  composes: content from 'Components/Page/PageContent.module.css';
+  background-color: var(--pageBackground);
+}
+
+.pageToolbar {
+  composes: toolbar from 'Components/Page/Toolbar/PageToolbar.module.css';
+  gap: 4px;
+}
+
+.toolbarSeparator {
+  composes: separator from 'Components/Page/Toolbar/PageToolbarSeparator.module.css';
+  margin: 0 var(--toolbarSeparatorMargin);
+}
+
+.toolbarSpacer {
+  flex: 1;
+}
+
+.toolbarBtn {
+  composes: toolbarButton from 'Components/Page/Toolbar/PageToolbarButton.module.css';
+  border: none;
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.toolbarBtnPrimary {
+  composes: button medium primary from 'Components/Link/Button.module.css';
+  height: var(--chipSize);
+  border-radius: 8px;
+  padding: 0 14px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.toolbarBtnDanger {
+  composes: button small danger from 'Components/Link/Button.module.css';
+  height: 30px;
+  border-radius: 6px;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+.pageBody {
+  @add-mixin scrollbar;
+  @add-mixin scrollbarTrack;
+  @add-mixin scrollbarThumb;
+
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--pageContentBodyPadding);
+  padding-top: 24px;
+}
+
+/* PageHeading — Composed from Components/Page/PageHeading.module.css */
+.pageHeading {
+  composes: heading from 'Components/Page/PageHeading.module.css';
+}
+
+.pageHeadingRow {
+  composes: row from 'Components/Page/PageHeading.module.css';
+}
+
+.pageHeadingTitle {
+  composes: title from 'Components/Page/PageHeading.module.css';
+}
+
+.pageHeadingScope {
+  composes: scope from 'Components/Page/PageHeading.module.css';
+}
+
+/* SectionHeading & FieldSet — Composed 1:1 from SectionHeading.module.css & FieldSet.module.css */
+.fieldSetSection {
+  composes: section from 'Components/FieldSet.module.css';
+}
+
+.sectionHeading {
+  composes: sectionHeading from 'Components/SectionHeading.module.css';
+}
+
+.sectionHeadingTitle {
+  composes: title from 'Components/SectionHeading.module.css';
+}
+
+.sectionHeadingDescription {
+  composes: description from 'Components/SectionHeading.module.css';
+}
+
+.fieldSet {
+  composes: fieldSet from 'Components/FieldSet.module.css';
+}
+
+/* SettingsCard / Instance Cards Grid — Composed from Components/SettingsCard/SettingsCard.module.css */
+.cardsGrid {
+  composes: grid from 'Components/SettingsCard/SettingsCard.module.css';
+}
+
+.instanceCard {
+  composes: card from 'Components/SettingsCard/SettingsCard.module.css';
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.cardHeader {
+  composes: nameContainer from 'Components/SettingsCard/SettingsCard.module.css';
+}
+
+.cardTitle {
+  composes: name from 'Components/SettingsCard/SettingsCard.module.css';
+}
+
+.cardSubtitle {
+  font-size: 12px;
+  color: var(--inkMuted);
+  margin-top: 4px;
+  font-family: var(--monoSpaceFontFamily);
+  word-break: break-all;
+}
+
+.tagRow {
+  composes: labels from 'Components/SettingsCard/SettingsCard.module.css';
+  gap: 4px;
+}
+
+.tag {
+  composes: label small default noDot from 'Components/Label.module.css';
+}
+
+.tagSuccess {
+  composes: label small success noDot from 'Components/Label.module.css';
+}
+
+.tagWarning {
+  composes: label small warning noDot from 'Components/Label.module.css';
+}
+
+.tagDanger {
+  composes: label small danger noDot from 'Components/Label.module.css';
+}
+
+.tagCyan {
+  composes: label small info noDot from 'Components/Label.module.css';
+}
+
+.addCard {
+  composes: addCard from 'Components/SettingsCard/SettingsCard.module.css';
+  min-height: 175px;
+}
+
+/* Tables — Composed 1:1 from Components/Table/* */
+.tableWrapper {
+  composes: tableContainer horizontalScroll from 'Components/Table/Table.module.css';
+}
+
+.dataTable {
+  composes: table from 'Components/Table/Table.module.css';
+}
+
+.dataTable th {
+  padding: 12px 10px;
+  color: var(--inkMuted);
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+  font-size: 11px;
+  font-family: var(--defaultFontFamily);
+  line-height: 18px;
+  user-select: none;
+}
+
+.sortableTh {
+  cursor: pointer;
+  transition: color var(--transitionSmooth);
+}
+
+.sortableTh:hover {
+  color: var(--ink);
+}
+
+.sortedTh {
+  color: var(--ink);
+}
+
+.sortArrow {
+  display: inline-flex;
+  vertical-align: middle;
+  margin-left: 6px;
+  color: var(--accentDeep);
+}
+
+.actionBtn {
+  composes: button from 'Components/Link/IconButton.module.css';
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: var(--inkMuted);
+  cursor: pointer;
+  transition:
+    color var(--transitionSmooth),
+    background-color var(--transitionSmooth);
+}
+
+.actionBtn:hover:not(:disabled) {
+  color: var(--ink);
+  background-color: var(--menuItemHoverBackgroundColor);
+}
+
+.actionBtnDanger:hover:not(:disabled) {
+  color: var(--dangerColor);
+  background-color: var(--alertDangerBackgroundColor);
+}
+
+.actionBtn:disabled {
+  opacity: 0.25;
+  cursor: default;
+  pointer-events: none;
+}
+
+.dataTable td {
+  padding: 12px 10px;
+  border-top: 1px solid var(--borderColor);
+  color: var(--ink);
+  font-size: 13px;
+  font-family: var(--defaultFontFamily);
+  line-height: 1.4;
+  vertical-align: middle;
+}
+
+.dataTable tbody tr {
+  transition: background-color 200ms cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.dataTable tbody tr:hover {
+  background-color: var(--tableRowHoverBackgroundColor);
+}
+
+/* Progress Bar — Composed from Components/ProgressBar.module.css */
+.diskProgressContainer {
+  composes: container medium from 'Components/ProgressBar.module.css';
+  width: 150px;
+}
+
+.diskProgressBar {
+  composes: progressBar primary from 'Components/ProgressBar.module.css';
+}
+
+.diskProgressBarDanger {
+  composes: progressBar danger from 'Components/ProgressBar.module.css';
+}
+
+.diskProgressBarWarning {
+  composes: progressBar warning from 'Components/ProgressBar.module.css';
+}
+
+.progressTrack {
+  composes: container large from 'Components/ProgressBar.module.css';
+  min-width: 150px;
+}
+
+.progressFill {
+  composes: progressBar primary from 'Components/ProgressBar.module.css';
+}
+
+.progressLabel {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--progressBarFrontTextColor);
+}
+
+/* DescriptionList (About Section) — Composed from Components/DescriptionList/* */
+.descriptionList {
+  composes: descriptionList from 'Components/DescriptionList/DescriptionList.module.css';
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  row-gap: 6px;
+  column-gap: 20px;
+  font-size: 14px;
+}
+
+.descriptionTitle {
+  font-weight: 600;
+  text-align: right;
+  color: var(--ink);
+  line-height: var(--lineHeight);
+}
+
+.descriptionValue {
+  margin: 0;
+  color: var(--inkSoft);
+  line-height: var(--lineHeight);
+  overflow-wrap: break-word;
+}
+
+/* Alerts — Composed from Components/Alert.module.css */
+.alertBox {
+  composes: alert from 'Components/Alert.module.css';
+}
+
+.alertInfo {
+  composes: alert info from 'Components/Alert.module.css';
+}
+
+.alertWarning {
+  composes: alert warning from 'Components/Alert.module.css';
+}
+
+.alertDanger {
+  composes: alert danger from 'Components/Alert.module.css';
+}
+
+/* Forms — Composed from Components/Form/* */
+.formContainer {
+  max-width: var(--formGroupMediumWidth);
+  display: flex;
+  flex-direction: column;
+}
+
+.formGroup {
+  composes: row right from 'Components/Form/FormRow.module.css';
+}
+
+.formLabel {
+  composes: label from 'Components/Form/FormLabel.module.css';
+}
+
+.formHelp {
+  color: var(--helpTextColor);
+  font-size: 12px;
+  line-height: 1.45;
+  margin-top: 2px;
+}
+
+.formInput,
+.formSelect {
+  composes: input from 'Components/Form/Input.module.css';
+}
+
+.formSelect {
+  padding: 6px 14px;
+}
+
+.formTextarea {
+  composes: input from 'Components/Form/Input.module.css';
+  height: auto;
+  min-height: 110px;
+  font-family: var(--monoSpaceFontFamily);
+}
+
+.checkboxLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  color: var(--ink);
+  font-size: 14px;
+}
+
+/* Modals — Composed from Components/Modal/* */
+.modalBackdrop {
+  composes: modalBackdrop from 'Components/Modal/Modal.module.css';
+  position: fixed;
+  inset: 0;
+  z-index: var(--modalZIndex);
+  padding: 20px;
+}
+
+.modalDialog {
+  composes: modal medium from 'Components/Modal/Modal.module.css';
+  composes: modalContent from 'Components/Modal/ModalContent.module.css';
+  flex-grow: 0;
+  width: 720px;
+  max-width: 92vw;
+  max-height: 88vh;
+  border: 1px solid var(--borderColor);
+}
+
+.modalHeader {
+  composes: modalHeader from 'Components/Modal/ModalHeader.module.css';
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: 24px;
+}
+
+.modalBody {
+  @add-mixin scrollbar;
+  @add-mixin scrollbarTrack;
+  @add-mixin scrollbarThumb;
+
+  composes: modalBody from 'Components/Modal/ModalBody.module.css';
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.modalFooter {
+  composes: modalFooter from 'Components/Modal/ModalFooter.module.css';
+  justify-content: space-between;
+  background-color: var(--paperWarm);
+}
+
+.providerGrid {
+  composes: grid from 'Components/SettingsCard/SettingsCard.module.css';
+  grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
+}
+
+.providerTile {
+  composes: card from 'Components/Card.module.css';
+  text-align: center;
+}
+
+.emptyState {
+  padding: 24px 0;
+  color: var(--inkMuted);
+  font-size: 14px;
+}

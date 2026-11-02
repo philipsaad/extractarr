@@ -1,0 +1,25 @@
+[Unit]
+Description=Extractarr Daemon (Automated Archive Extraction Engine for *arr)
+After=syslog.target network.target
+
+[Service]
+User=root
+Group=root
+UMask=0002
+Type=simple
+WorkingDirectory=/opt/Extractarr
+ExecStart=/opt/Extractarr/Extractarr.Host
+Environment="EXTRACTARR_DATA_DIR=/var/lib/extractarr"
+Environment="EXTRACTARR_PORT=8686"
+Environment="UNPACKARR_DATA_DIR=/var/lib/extractarr"
+Environment="UNPACKARR_PORT=8686"
+Environment="ASPNETCORE_URLS=http://0.0.0.0:8686"
+Environment="DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false"
+TimeoutStopSec=20
+KillMode=process
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+
